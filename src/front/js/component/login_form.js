@@ -13,6 +13,7 @@ export const Login_form = () => {
 					<input
 						onChange={e => {
 							setEmail(e.target.value);
+							actions.changeMessage({ message: "Tic.tac.tic.tac..." });
 						}}
 						className="form-control"
 						type="mail"
@@ -23,6 +24,7 @@ export const Login_form = () => {
 					<input
 						onChange={e => {
 							setPassword(e.target.value);
+							actions.changeMessage({ message: "Tic.tac.tic.tac..." });
 						}}
 						className="form-control"
 						type="password"
@@ -34,7 +36,7 @@ export const Login_form = () => {
 						onClick={() => {
 							actions.generate_token(email, password);
 						}}
-						className="btn btn-warning mt-3"
+						className="btn btn-warning mt-3 border-success"
 						type="submit">
 						Go in !
 					</button>

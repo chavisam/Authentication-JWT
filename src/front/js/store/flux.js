@@ -3,6 +3,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 		store: {
 			message: null,
 			token: null,
+			user_email: "",
 			demo: [
 				{
 					title: "FIRST",
@@ -17,6 +18,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 			]
 		},
 		actions: {
+			//ChangeMessage
+			changeMessage: () => {
+				setStore({ message: "Tic,tac,tic,tac...." });
+			},
 			//log out
 			logOut: () => {
 				setStore({ token: null });
@@ -28,7 +33,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			getMessage: () => {
 				// fetching data from the backend
-				fetch(process.env.BACKEND_URL + "/api/hello")
+				fetch(process.env.BACKEND_URL + "/hello")
 					.then(resp => resp.json())
 					.then(data => setStore({ message: data.message }))
 					.catch(error => console.log("Error loading message from backend", error));
@@ -51,13 +56,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 			generate_token: async (email_recieved, password_recieved) => {
 				const store = getStore();
 
-				const resp = await fetch(`https://3001-bronze-bovid-lky21hj9.ws-eu18.gitpod.io/api/token`, {
+				const resp = await fetch(process.env.BACKEND_URL + "/token", {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({ email: email_recieved, password: password_recieved })
 				});
 
-				if (!resp.ok) throw Error("There was a problem in the login request");
+				if (!resp.ok) throw setStore({ message: "Invalid email or Password !" });
 
 				if (resp.status === 401) {
 					throw "Invalid credentials";
@@ -69,6 +74,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				//also you should set your user into the store using the setStore function
 				localStorage.setItem("token", data.token);
 				setStore({ token: data.token });
+				setStore({ user_email: email_recieved });
 
 				return data;
 			}
