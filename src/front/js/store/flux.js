@@ -2,6 +2,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			message: null,
+			token: null,
 			demo: [
 				{
 					title: "FIRST",
@@ -16,6 +17,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 			]
 		},
 		actions: {
+			//log out
+			logOut: () => {
+				setStore({ token: null });
+			},
 			// Use getActions to call a function within a fuction
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
@@ -41,6 +46,31 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				//reset the global store
 				setStore({ demo: demo });
+			},
+
+			generate_token: async (email_recieved, password_recieved) => {
+				const store = getStore();
+
+				const resp = await fetch(`https://3001-bronze-bovid-lky21hj9.ws-eu18.gitpod.io/api/token`, {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ email: email_recieved, password: password_recieved })
+				});
+
+				if (!resp.ok) throw Error("There was a problem in the login request");
+
+				if (resp.status === 401) {
+					throw "Invalid credentials";
+				} else if (resp.status === 400) {
+					throw "Invalid email or password format";
+				}
+				const data = await resp.json();
+				// save your token in the localStorage
+				//also you should set your user into the store using the setStore function
+				localStorage.setItem("token", data.token);
+				setStore({ token: data.token });
+
+				return data;
 			}
 		}
 	};

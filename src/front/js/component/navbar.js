@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { Context } from "../store/appContext";
 
 export const Navbar = () => {
+	const { store, actions } = useContext(Context);
+
 	return (
 		<nav className="navbar navbar-light bg-light">
 			<div className="container">
@@ -12,6 +15,19 @@ export const Navbar = () => {
 					<Link to="/demo">
 						<button className="btn btn-primary">Check the Context in action</button>
 					</Link>
+					{store.token ? (
+						<span>
+							<button
+								className="btn btn-primary m-2"
+								onClick={() => {
+									actions.logOut();
+								}}>
+								LOG OUT!
+							</button>
+						</span>
+					) : (
+						""
+					)}
 				</div>
 			</div>
 		</nav>
