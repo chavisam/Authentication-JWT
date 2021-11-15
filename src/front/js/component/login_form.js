@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext";
+import { Link } from "react-router-dom";
 
 export const Login_form = () => {
 	const { actions, store } = useContext(Context);
@@ -32,6 +33,9 @@ export const Login_form = () => {
 						name="password"
 						placeholder="password"
 					/>
+					<Link to="/signup">
+						<p className="text-end">Never here?, Sign Up!</p>
+					</Link>
 					<button
 						onClick={() => {
 							actions.generate_token(email, password);

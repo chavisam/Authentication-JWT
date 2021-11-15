@@ -2,6 +2,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			message: null,
+			msg: { show: false, text: "" },
 			token: null,
 			user_email: "",
 			demo: [
@@ -53,6 +54,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ demo: demo });
 			},
 
+			// generate TOKEN
 			generate_token: async (email_recieved, password_recieved) => {
 				const store = getStore();
 
@@ -77,6 +79,21 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ user_email: email_recieved });
 
 				return data;
+			},
+
+			//CREATE NEW USER
+			createUser: async data => {
+				const actions = getActions();
+				const store = getStore();
+
+				const resp = await fetch(process.env.BACKEND_URL + "/signup", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(data)
+				});
+				const data2 = await resp.json();
+				const text_received = data2.text;
+				setStore({ msg: { show: true, text: text_received } });
 			}
 		}
 	};
